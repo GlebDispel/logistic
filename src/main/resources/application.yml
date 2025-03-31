@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    postgres:
+      url: jdbc:postgresql://localhost:5432/sla
+      username: postgres
+      password: 123456
+      driver-class-name: org.postgresql.Driver
+    clickhouse:
+      url: jdbc:clickhouse://localhost:8123/default
+      username: logistics_user
+      password: secure_password
+      driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
+
+  liquibase:
+    enabled: true               # Общее включение Liquibase
+    change-log: classpath:db-changelog/postgres/db.changelog-master.yml
+    default-schema: public
+
+  kafka:
+    listener:
+      ack-mode: manual_immediate
+    consumer:
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.deserializer.ignore.type.headers: false
+
+# Кастомные настройки для ClickHouse Liquibase
+app:
+  liquibase:
+    clickhouse:
+      change-log: classpath:db-changelog/clickhouse/db.changelog-master.yml
+
+
