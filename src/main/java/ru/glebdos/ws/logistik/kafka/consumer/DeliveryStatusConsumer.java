@@ -1,4 +1,4 @@
-package ru.glebdos.ws.logistik.kafkaConsumer;
+package ru.glebdos.ws.logistik.kafka.consumer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,9 +6,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
-import ru.glebdos.ws.logistik.entityPostgre.DeliveryStatusMessage;
-import ru.glebdos.ws.logistik.entityPostgre.FailedEvent;
-import ru.glebdos.ws.logistik.repository.FailedEventRepository;
+import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatusMessage;
+import ru.glebdos.ws.logistik.data.entity.postgresql.FailedEvent;
+import ru.glebdos.ws.logistik.data.repository.postgresql.FailedEventRepository;
 import ru.glebdos.ws.logistik.services.DeliveryStatusService;
 import ru.glebdos.ws.logistik.util.RetryManager;
 

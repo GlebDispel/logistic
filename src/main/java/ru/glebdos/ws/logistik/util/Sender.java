@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import org.springframework.web.bind.annotation.*;
-import ru.glebdos.ws.logistik.entityPostgre.DeliveryStatus;
-import ru.glebdos.ws.logistik.entityPostgre.DeliveryStatusMessage;
+import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatus;
+import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatusMessage;
 
 
 import java.time.Instant;

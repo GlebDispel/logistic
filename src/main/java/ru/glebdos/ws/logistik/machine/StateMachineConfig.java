@@ -6,7 +6,7 @@ import org.springframework.statemachine.config.StateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 
-import ru.glebdos.ws.logistik.entityPostgre.DeliveryStatus;
+import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatus;
 
 import java.util.EnumSet;
 

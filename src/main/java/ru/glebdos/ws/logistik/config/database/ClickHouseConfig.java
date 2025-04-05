@@ -1,4 +1,4 @@
-package ru.glebdos.ws.logistik.config;
+package ru.glebdos.ws.logistik.config.database;
 
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Autowired;

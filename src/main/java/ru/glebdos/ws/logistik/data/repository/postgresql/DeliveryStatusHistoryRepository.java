@@ -1,10 +1,10 @@
-package ru.glebdos.ws.logistik.repository;
+package ru.glebdos.ws.logistik.data.repository.postgresql;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.glebdos.ws.logistik.entityPostgre.DeliveryStatusHistory;
+import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatusHistory;
 
 import java.time.Instant;
 import java.util.List;

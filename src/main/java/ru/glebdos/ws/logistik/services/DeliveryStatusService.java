@@ -9,10 +9,10 @@ import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.glebdos.ws.logistik.entityPostgre.Delivery;
-import ru.glebdos.ws.logistik.entityPostgre.DeliveryStatus;
-import ru.glebdos.ws.logistik.entityPostgre.DeliveryStatusMessage;
-import ru.glebdos.ws.logistik.repository.DeliveryRepository;
+import ru.glebdos.ws.logistik.data.entity.postgresql.Delivery;
+import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatus;
+import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatusMessage;
+import ru.glebdos.ws.logistik.data.repository.postgresql.DeliveryRepository;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;

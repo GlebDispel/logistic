@@ -1,4 +1,4 @@
-package ru.glebdos.ws.logistik.entityPostgre;
+package ru.glebdos.ws.logistik.data.entity.postgresql;
 
 import jakarta.persistence.*;
 import lombok.Getter;
