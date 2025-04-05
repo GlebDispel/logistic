@@ -1,4 +1,4 @@
-package ru.glebdos.ws.logistik.clickRepo;
+package ru.glebdos.ws.logistik.data.repository.clickhouse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

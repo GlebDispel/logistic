@@ -1,4 +1,4 @@
-package ru.glebdos.ws.logistik.kafkaConfig;
+package ru.glebdos.ws.logistik.config.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -11,7 +11,7 @@ import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.util.backoff.FixedBackOff;
-import ru.glebdos.ws.logistik.entityPostgre.DeliveryStatusMessage;
+import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatusMessage;
 
 import java.util.HashMap;
 import java.util.Map;

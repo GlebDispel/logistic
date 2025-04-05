@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.glebdos.ws.logistik.entityPostgre.DeliveryStatusMessage;
-import ru.glebdos.ws.logistik.entityPostgre.FailedEvent;
-import ru.glebdos.ws.logistik.repository.DeliveryRepository;
-import ru.glebdos.ws.logistik.repository.FailedEventRepository;
+import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatusMessage;
+import ru.glebdos.ws.logistik.data.entity.postgresql.FailedEvent;
+import ru.glebdos.ws.logistik.data.repository.postgresql.DeliveryRepository;
+import ru.glebdos.ws.logistik.data.repository.postgresql.FailedEventRepository;
 import ru.glebdos.ws.logistik.services.DeliveryStatusService;
 
 import java.time.Instant;

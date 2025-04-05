@@ -1,8 +1,8 @@
-package ru.glebdos.ws.logistik.repository;
+package ru.glebdos.ws.logistik.data.repository.postgresql;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.glebdos.ws.logistik.entityPostgre.Delivery;
+import ru.glebdos.ws.logistik.data.entity.postgresql.Delivery;
 
 import java.util.Optional;
 

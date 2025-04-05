@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import ru.glebdos.ws.logistik.clickDto.DeliveryStatusHistoryClickHouse;
+import ru.glebdos.ws.logistik.data.dto.clickhouse.DeliveryStatusHistoryClickHouse;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

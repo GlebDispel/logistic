@@ -1,4 +1,4 @@
-package ru.glebdos.ws.logistik.config;
+package ru.glebdos.ws.logistik.config.database;
 
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +26,10 @@ import java.util.Map;
 @EnableTransactionManagement
 @EnableJpaRepositories(
         entityManagerFactoryRef = "postgresEntityManagerFactory",
-        basePackages = {"ru.glebdos.ws.logistik.repository"},
+        basePackages = {"ru.glebdos.ws.logistik.data.repository.postgresql"},
         transactionManagerRef = "postgresTransactionManager"
 )
-@EntityScan(basePackages = "ru.glebdos.ws.logistik.entityPostgre")
+@EntityScan(basePackages = "ru.glebdos.ws.logistik.data.entity.postgresql")
 public class PostgresConfig {
 
 
@@ -56,7 +56,7 @@ public class PostgresConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setDataSource(dataSource());
-        factoryBean.setPackagesToScan("ru.glebdos.ws.logistik.entityPostgre");
+        factoryBean.setPackagesToScan("ru.glebdos.ws.logistik.data.entity.postgresql");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         factoryBean.setJpaVendorAdapter(vendorAdapter);
