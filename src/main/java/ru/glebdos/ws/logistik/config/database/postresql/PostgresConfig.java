@@ -1,14 +1,12 @@
-package ru.glebdos.ws.logistik.config.database;
+package ru.glebdos.ws.logistik.config.database.postresql;
 
 import liquibase.integration.spring.SpringLiquibase;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -33,21 +31,26 @@ import java.util.Map;
 public class PostgresConfig {
 
 
-    private final Environment environment;
+    private final PostgresProperties properties;
 
-    @Autowired
-    public PostgresConfig(Environment environment) {
-        this.environment = environment;
+    public PostgresConfig(PostgresProperties properties) {
+        this.properties = properties;
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.jpa.properties")
+    public Map<String, String> jpaProperties() {
+        return new HashMap<>();
     }
 
     @Bean(name = "postgresDataSource")
     @Primary
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(environment.getProperty("spring.datasource.postgres.url"));
-        dataSource.setUsername(environment.getProperty("spring.datasource.postgres.username"));
-        dataSource.setPassword(environment.getProperty("spring.datasource.postgres.password"));
-        dataSource.setDriverClassName(environment.getProperty("spring.datasource.postgres.driver-class-name"));
+        dataSource.setUrl(properties.getUrl());
+        dataSource.setUsername(properties.getUsername());
+        dataSource.setPassword(properties.getPassword());
+        dataSource.setDriverClassName(properties.getDriverClassName());
         return dataSource;
     }
 
@@ -61,11 +64,7 @@ public class PostgresConfig {
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         factoryBean.setJpaVendorAdapter(vendorAdapter);
 
-        Map<String, String> properties = new HashMap<>();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        properties.put("hibernate.hbm2ddl.auto", "none");
-        properties.put("hibernate.show_sql", "true");
-        factoryBean.setJpaPropertyMap(properties);
+        factoryBean.setJpaPropertyMap(jpaProperties());
 
         return factoryBean;
     }
@@ -80,13 +79,12 @@ public class PostgresConfig {
     @Bean
     public SpringLiquibase postgresLiquibase(
             @Qualifier("postgresDataSource") DataSource dataSource,
-            @Value("${spring.liquibase.change-log}") String changeLog,
-            @Value("${spring.liquibase.default-schema}") String defaultSchema) {
+            PostgresLiquibaseProperties liquibaseProperties) {
 
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog(changeLog);
-        liquibase.setDefaultSchema(defaultSchema);
+        liquibase.setChangeLog(liquibaseProperties.getChangeLog());
+        liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
         return liquibase;
     }
 }
