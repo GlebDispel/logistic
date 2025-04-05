@@ -24,8 +24,9 @@ public class DeliveryStatusConsumer {
     private final RetryManager retryManager;
     private final DeliveryStatusService statusService;
     private final FailedEventRepository failedEventRepository;
+    private final String deliveryStatusUpdateTopic = "delivery-status-updates";
 
-    @KafkaListener(topics = "delivery-status-updates")
+    @KafkaListener(topics = deliveryStatusUpdateTopic)
     public void handleStatusUpdate(
             ConsumerRecord<String, DeliveryStatusMessage> record,
             Acknowledgment acknowledgment) {

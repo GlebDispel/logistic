@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Configuration
 @Slf4j
-public class KafkaConfigConsumer {
+public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, DeliveryStatusMessage> consumerFactory() {

@@ -2,11 +2,14 @@ package ru.glebdos.ws.logistik.data.entity.postgresql;
 
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "deliveries")
@@ -14,6 +17,10 @@ import java.util.Objects;
         name = "Delivery.withStatusHistory",
         attributeNodes = @NamedAttributeNode("statusHistory")
 )
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 public class Delivery {
     @Id
     private Long id;
@@ -45,40 +52,5 @@ public class Delivery {
     public Delivery() {
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<DeliveryStatusHistory> getStatusHistory() {
-        return statusHistory;
-    }
-
-    public void setStatusHistory(List<DeliveryStatusHistory> statusHistory) {
-        this.statusHistory = statusHistory;
-    }
-
-    @Override
-    public String toString() {
-        return "Delivery{" +
-                "id=" + id +
-                ", statusHistory=" + statusHistory +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Delivery delivery = (Delivery) o;
-        return Objects.equals(id, delivery.id) && Objects.equals(statusHistory, delivery.statusHistory);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, statusHistory);
-    }
 }
