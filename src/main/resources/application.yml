@@ -32,4 +32,3 @@ app:
     clickhouse:
       change-log: classpath:db-changelog/clickhouse/db.changelog-master.yml
 
-
