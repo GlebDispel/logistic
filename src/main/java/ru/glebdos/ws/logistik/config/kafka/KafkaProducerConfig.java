@@ -17,8 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaConfigProducer {
+public class KafkaProducerConfig {
 
+    private final String deliveryStatusUpdateTopic = "delivery-status-updates";
 
 
     Map<String,Object> producerConfig() {
@@ -43,7 +44,7 @@ public class KafkaConfigProducer {
     @Bean
     NewTopic createTopic(){
         return TopicBuilder
-                .name("delivery-status-updates")
+                .name(deliveryStatusUpdateTopic)
                 .partitions(3)
                 .replicas(3)
                 .configs(Map.of("min.insync.replicas","2"))

@@ -1,12 +1,13 @@
 package ru.glebdos.ws.logistik.data.entity.postgresql;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class DeliveryStatusMessage {
     private Long id;
     private DeliveryStatus currentStatus; // Может быть null
@@ -14,15 +15,7 @@ public class DeliveryStatusMessage {
     private Instant timestamp;
 
 
-    public DeliveryStatusMessage(Long id, DeliveryStatus currentStatus, DeliveryStatus toStatus, Instant timestamp) {
-        this.id = id;
-        this.currentStatus = currentStatus;
-        this.toStatus = toStatus;
-        this.timestamp = timestamp;
-    }
 
-    public DeliveryStatusMessage() {
-    }
 
 
 }

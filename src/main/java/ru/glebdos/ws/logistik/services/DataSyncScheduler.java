@@ -2,6 +2,10 @@ package ru.glebdos.ws.logistik.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,14 +18,15 @@ import ru.glebdos.ws.logistik.data.repository.postgresql.DeliveryStatusHistoryRe
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class DataSyncScheduler {
-    
+
+
+    private final Pageable pageable = PageRequest.of(0, 1, Sort.by("statusTimestamp").descending());
     private final DeliveryStatusHistoryRepository postgresRepo;
     private final ClickHouseService clickhouseService;
     private final ClickHouseRepository clickHouseRepository;
@@ -60,14 +65,16 @@ public class DataSyncScheduler {
         dto.setStatus(entity.getStatus().name());
         dto.setStatusTimestamp(entity.getStatusTimestamp());
 
+
         // Получаем предыдущий статус для этой же доставки
-        Optional<DeliveryStatusHistory> prevStatusOpt = postgresRepo.findPreviousStatus(
+        Page<DeliveryStatusHistory> prevStatusOpt = postgresRepo.findPreviousStatus(
                 entity.getDelivery().getId(),
-                entity.getStatusTimestamp()
+                entity.getStatusTimestamp(),
+                pageable
         );
 
-        if (prevStatusOpt.isPresent()) {
-            DeliveryStatusHistory prevStatus = prevStatusOpt.get();
+        if (!prevStatusOpt.getContent().isEmpty()) {
+            DeliveryStatusHistory prevStatus = prevStatusOpt.getContent().get(0);
             Duration timeSpent = Duration.between(
                     prevStatus.getStatusTimestamp(),
                     entity.getStatusTimestamp()

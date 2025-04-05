@@ -29,17 +29,6 @@ public class Sender {
 
     }
 
-//    @PostMapping
-//    public ResponseEntity<?> sender(@RequestParam("id") Long id,
-//                                   @RequestParam(value = "currentStatus", required = false) DeliveryStatus currentStatus,
-//                                   @RequestParam("toStatus") DeliveryStatus toStatus) throws ExecutionException, InterruptedException {
-//
-//
-//        DeliveryStatusMessage deliveryStatusMessage = new DeliveryStatusMessage(id,currentStatus,toStatus, now);
-//        kafkaTemplate.send("delivery-status-updates",deliveryStatusMessage);
-//
-//        return ResponseEntity.ok("ok");
-//    }
 
 
     @GetMapping("/test")
