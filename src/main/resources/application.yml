@@ -1,15 +1,21 @@
 spring:
   datasource:
     postgres:
-      url: jdbc:postgresql://localhost:5432/sla
-      username: postgres
-      password: 123456
-      driver-class-name: org.postgresql.Driver
+      url: ${DATASOURCE_POSTGRES_URL}
+      username: ${DATASOURCE_POSTGRES_USERNAME}
+      password: ${DATASOURCE_POSTGRES_PASSWORD}
+      driver-class-name: ${DATASOURCE_POSTGRES_DRIVER}
     clickhouse:
-      url: jdbc:clickhouse://localhost:8123/default
-      username: logistics_user
-      password: secure_password
-      driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
+      url: ${DATASOURCE_CLICKHOUSE_URL}
+      username: ${DATASOURCE_CLICKHOUSE_USERNAME}
+      password: ${DATASOURCE_CLICKHOUSE_PASSWORD}
+      driver-class-name: ${DATASOURCE_CLICKHOUSE_DRIVER}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        hbm2ddl.auto: none
+        show_sql: true
 
   liquibase:
     enabled: true               # Общее включение Liquibase

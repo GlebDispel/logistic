@@ -1,12 +1,10 @@
-package ru.glebdos.ws.logistik.config.database;
+package ru.glebdos.ws.logistik.config.database.clickhouse;
 
 import liquibase.integration.spring.SpringLiquibase;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
@@ -15,21 +13,22 @@ import javax.sql.DataSource;
 @Configuration
 public class ClickHouseConfig {
 
+    @Value("${app.liquibase.clickhouse.change-log}")
+    private String changeLog;
+    private final ClickHouseProperties properties;
 
-    private final Environment environment;
-
-    @Autowired
-    public ClickHouseConfig(Environment environment) {
-        this.environment = environment;
+    public ClickHouseConfig(ClickHouseProperties properties) {
+        this.properties = properties;
     }
+
 
     @Bean(name = "clickhouseDataSource")
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(environment.getProperty("spring.datasource.clickhouse.url"));
-        dataSource.setUsername(environment.getProperty("spring.datasource.clickhouse.username"));
-        dataSource.setPassword(environment.getProperty("spring.datasource.clickhouse.password"));
-        dataSource.setDriverClassName(environment.getProperty("spring.datasource.clickhouse.driver-class-name"));
+        dataSource.setUrl(properties.getUrl());
+        dataSource.setUsername(properties.getUsername());
+        dataSource.setPassword(properties.getPassword());
+        dataSource.setDriverClassName(properties.getDriverClassName());
         return dataSource;
     }
 
@@ -39,8 +38,7 @@ public class ClickHouseConfig {
     }
     @Bean
     public SpringLiquibase clickhouseLiquibase(
-            @Qualifier("clickhouseDataSource") DataSource dataSource,
-            @Value("${app.liquibase.clickhouse.change-log}") String changeLog) {
+            @Qualifier("clickhouseDataSource") DataSource dataSource) {
 
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
