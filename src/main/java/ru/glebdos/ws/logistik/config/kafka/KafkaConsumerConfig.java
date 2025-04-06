@@ -23,7 +23,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, DeliveryStatusMessage> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9094,localhost:9096");
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka-1:9090,kafka-2:9090,kafka-3:9090");
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "delivery_group");
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);

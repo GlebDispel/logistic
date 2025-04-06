@@ -12,6 +12,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class FailedEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,10 +2,7 @@ package ru.glebdos.ws.logistik.data.entity.postgresql;
 
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,6 +18,7 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor
 public class Delivery {
     @Id
     private Long id;
@@ -49,8 +47,7 @@ public class Delivery {
         this.statusHistory = statusHistory;
     }
 
-    public Delivery() {
-    }
+
 
 
 }
