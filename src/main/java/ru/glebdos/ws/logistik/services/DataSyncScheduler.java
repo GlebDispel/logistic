@@ -2,13 +2,15 @@ package ru.glebdos.ws.logistik.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.glebdos.ws.logistik.data.dto.clickhouse.DeliveryStatusHistoryClickHouse;
 import ru.glebdos.ws.logistik.data.repository.clickhouse.ClickHouseRepository;
 import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatus;
@@ -38,24 +40,46 @@ public class DataSyncScheduler {
     );
 
     @Scheduled(cron = "0 */1 * * * *")
-    @Transactional
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 5000), retryFor = {DataAccessException.class})
     public void syncData() {
-        Long lastId = clickHouseRepository.getLastId() + 1;
-        log.info("Шедулер начал работу");
+        try {
+            // Этап 1: Получение lastId
+            Long lastId;
+            try {
+                lastId = clickHouseRepository.getLastId() + 1;
+            } catch (Exception e) {
+                log.error("Ошибка при получении lastId: {}", e.getMessage());
+                return;
+            }
 
-        List<DeliveryStatusHistory> postgresData = postgresRepo.findRecent(lastId);
-        log.info("Данные получены");
+            // Этап 2: Запрос данных из PostgreSQL
+            List<DeliveryStatusHistory> postgresData;
+            try {
+                postgresData = postgresRepo.findRecent(lastId);
+            } catch (Exception e) {
+                log.error("Ошибка при запросе данных из PostgreSQL: {}", e.getMessage());
+                return;
+            }
 
-        List<DeliveryStatusHistoryClickHouse> clickhouseData = postgresData.stream()
-                .map(this::convertToClickHouseDto)
-                .collect(Collectors.toList());
-        log.info("Конвертация прошла успешно");
+            // Этап 3: Конвертация
+            List<DeliveryStatusHistoryClickHouse> clickhouseData = postgresData.stream()
+                    .map(this::convertToClickHouseDto)
+                    .collect(Collectors.toList());
 
-        if (!clickhouseData.isEmpty()) {
-            clickhouseService.batchInsert(clickhouseData);
+            log.info("Конвертировано {} записей", clickhouseData.size());
+
+            // Этап 4: Вставка в ClickHouse
+            if (!clickhouseData.isEmpty()) {
+                try {
+                    clickhouseService.batchInsert(clickhouseData);
+                    log.info("Вставка прошла успешно");
+                } catch (Exception e) {
+                    log.error("Ошибка вставки в ClickHouse: {}", e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            log.error("Critical error in syncData: {}", e.getMessage(), e);
         }
-
-        log.info("Вставка прошла успешно");
     }
 
     private DeliveryStatusHistoryClickHouse convertToClickHouseDto(DeliveryStatusHistory entity) {
