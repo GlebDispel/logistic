@@ -1,8 +1,7 @@
 package ru.glebdos.ws.logistik.services;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
@@ -19,8 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DeliveryStatusService {
-    private static final Logger log = LoggerFactory.getLogger(DeliveryStatusService.class);
     private final DeliveryRepository deliveryRepository;
     private final StateMachineFactory<DeliveryStatus, DeliveryStatus> stateMachineFactory;
     private final AtomicInteger dbCallCounter = new AtomicInteger(0);
