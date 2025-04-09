@@ -16,7 +16,4 @@ public class DeliveryStatusMessage {
     private Instant timestamp;
 
 
-
-
-
 }
