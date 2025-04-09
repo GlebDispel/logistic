@@ -29,9 +29,4 @@ public class DeliveryStatusHistory {
     @Column(name = "status_timestamp")
     private Instant statusTimestamp;
 
-
-
-
-
-
 }

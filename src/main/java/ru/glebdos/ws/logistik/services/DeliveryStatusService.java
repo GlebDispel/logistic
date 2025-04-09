@@ -2,7 +2,6 @@ package ru.glebdos.ws.logistik.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
@@ -22,24 +21,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DeliveryStatusService {
     private final DeliveryRepository deliveryRepository;
     private final StateMachineFactory<DeliveryStatus, DeliveryStatus> stateMachineFactory;
-    private final AtomicInteger dbCallCounter = new AtomicInteger(0);
-    private volatile boolean simulateFailure = true;
 
-    private void checkSimulatedFailure() {
-        if (!simulateFailure) return;
 
-        int attempt = dbCallCounter.incrementAndGet();
-        if (attempt == 1) {
-            throw new DataAccessResourceFailureException("Simulated DB failure");
-        }
-        // После первой ошибки отключаем симуляцию
-        simulateFailure = false;
-    }
 
     @Transactional
     public void processStatusUpdate(DeliveryStatusMessage message) {
 
-        checkSimulatedFailure();
 
         log.info("processStatusUpdate : {}", message.toString());
 
@@ -58,8 +45,7 @@ public class DeliveryStatusService {
         }
 
         // 3. Проверяем текущий статус
-        if (message.getCurrentStatus() != null &&
-                !message.getCurrentStatus().equals(delivery.getCurrentStatus())) {
+        if (message.getCurrentStatus() != null && !message.getCurrentStatus().equals(delivery.getCurrentStatus())) {
             log.info("message status : {} ", message.getToStatus().toString());
             log.info("delivery status : {}", delivery.getCurrentStatus().toString());
             throw new IllegalStateException("Current status mismatch");

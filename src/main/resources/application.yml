@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   datasource:
     postgres:
       url: ${DATASOURCE_POSTGRES_URL}
@@ -31,6 +33,7 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
         spring.deserializer.ignore.type.headers: false
+    bootstrap-servers: kafka-1:9090,kafka-2:9090,kafka-3:9090
 
 # Кастомные настройки для ClickHouse Liquibase
 app:
