@@ -18,6 +18,9 @@ public class ClickHouseService {
     private final JdbcTemplate clickhouseJdbcTemplate;
 
     public void batchInsert(List<DeliveryStatusHistoryClickHouse> data) {
+        if (data.isEmpty())
+            return;
+
         String sql = "INSERT INTO delivery_status_history (historyId, delivery_id, status, statusTimestamp, slaViolated, violationDuration) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
         
