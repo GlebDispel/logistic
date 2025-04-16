@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatusMessage;
 import ru.glebdos.ws.logistik.data.entity.postgresql.FailedEvent;
-import ru.glebdos.ws.logistik.data.repository.postgresql.DeliveryRepository;
 import ru.glebdos.ws.logistik.data.repository.postgresql.FailedEventRepository;
 import ru.glebdos.ws.logistik.services.DeliveryStatusService;
 
 import java.time.Instant;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -19,17 +17,17 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RetryManager {
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+    private final ScheduledExecutorService scheduler;
     private final int MAX_ATTEMPTS = 3;
     private final DeliveryStatusService deliveryStatusService;
     private final FailedEventRepository failedEventRepository;
-    private final DeliveryRepository deliveryRepository;
 
     @Autowired
-    public RetryManager(DeliveryStatusService deliveryStatusService, FailedEventRepository failedEventRepository, DeliveryRepository deliveryRepository) {
+    public RetryManager(ScheduledExecutorService scheduler, DeliveryStatusService deliveryStatusService, FailedEventRepository failedEventRepository) {
+        this.scheduler = scheduler;
         this.deliveryStatusService = deliveryStatusService;
         this.failedEventRepository = failedEventRepository;
-        this.deliveryRepository = deliveryRepository;
+
     }
 
     public void scheduleRetry(ConsumerRecord<String, DeliveryStatusMessage> record, int attempt) {

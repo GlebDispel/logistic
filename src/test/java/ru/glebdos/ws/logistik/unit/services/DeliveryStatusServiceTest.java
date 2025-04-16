@@ -153,4 +153,33 @@ class DeliveryStatusServiceTest {
 
 
     }
+
+    @Test
+    @DisplayName("Некорректное изменение статуса - выбрасывает исключение")
+    void processStatusUpdate_WhenInvalidTransition_ShouldThrowException(){
+        //given
+        Instant now = Instant.now();
+        long deliveryId = 1L;
+        DeliveryStatusMessage message = new DeliveryStatusMessage(deliveryId,DeliveryStatus.NEW,DeliveryStatus.DELIVERY,now);
+
+        Delivery existing = new Delivery();
+        existing.setId(1L);
+        existing.addStatusHistory(DeliveryStatus.NEW,now.minusSeconds(60));
+
+        when(deliveryRepository.findWithStatusHistoryById(deliveryId))
+                .thenReturn(Optional.of(existing));
+
+        StateMachine<DeliveryStatus, DeliveryStatus> mockStateMachine = mock(StateMachine.class);
+        when(mockStateMachine.sendEvent(DeliveryStatus.DELIVERY)).thenReturn(false); // переход не сработал
+
+        when(deliveryStateMachineBuilder.build(existing)).thenReturn(mockStateMachine);
+
+        //when
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> deliveryStatusService.processStatusUpdate(message));
+
+        //then
+        assertEquals("Invalid status transition: NEW → DELIVERY", exception.getMessage());
+
+    }
 }
