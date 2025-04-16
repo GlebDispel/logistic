@@ -3,24 +3,23 @@ package ru.glebdos.ws.logistik.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.statemachine.StateMachine;
-import org.springframework.statemachine.config.StateMachineFactory;
-import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.glebdos.ws.logistik.data.entity.postgresql.Delivery;
 import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatus;
 import ru.glebdos.ws.logistik.data.entity.postgresql.DeliveryStatusMessage;
 import ru.glebdos.ws.logistik.data.repository.postgresql.DeliveryRepository;
+import ru.glebdos.ws.logistik.machine.DeliveryStateMachineBuilder;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class DeliveryStatusService {
     private final DeliveryRepository deliveryRepository;
-    private final StateMachineFactory<DeliveryStatus, DeliveryStatus> stateMachineFactory;
+    private final DeliveryStateMachineBuilder stateMachineBuilder;
 
 
 
@@ -34,6 +33,8 @@ public class DeliveryStatusService {
         Delivery delivery = deliveryRepository.findWithStatusHistoryById(message.getId())
                 .orElseGet(() -> new Delivery(message.getId(),new ArrayList<>()));
 
+        log.info("Delivery получен или создан {} + currentStatus {}",delivery.getId(), delivery.getCurrentStatus());
+
         // 2. Для новых заказов просто сохраняем статус NEW
         if (message.getToStatus() == DeliveryStatus.NEW) {
             if (delivery.getCurrentStatus() != null) {
@@ -46,13 +47,13 @@ public class DeliveryStatusService {
 
         // 3. Проверяем текущий статус
         if (message.getCurrentStatus() != null && !message.getCurrentStatus().equals(delivery.getCurrentStatus())) {
-            log.info("message status : {} ", message.getToStatus().toString());
+            log.info("message status : {} ", message.getCurrentStatus().toString());
             log.info("delivery status : {}", delivery.getCurrentStatus().toString());
             throw new IllegalStateException("Current status mismatch");
         }
 
         // 4. Создаем State Machine с текущим состоянием
-        StateMachine<DeliveryStatus, DeliveryStatus> sm = buildStateMachine(delivery);
+        StateMachine<DeliveryStatus, DeliveryStatus> sm = stateMachineBuilder.build(delivery);
 
         // 5. Пытаемся выполнить переход
         if (!sm.sendEvent(message.getToStatus())) {
@@ -64,15 +65,5 @@ public class DeliveryStatusService {
         delivery.addStatusHistory(sm.getState().getId(), message.getTimestamp());
     }
 
-    private StateMachine<DeliveryStatus, DeliveryStatus> buildStateMachine(Delivery delivery) {
-        StateMachine<DeliveryStatus, DeliveryStatus> sm = stateMachineFactory.getStateMachine();
 
-        sm.getStateMachineAccessor().doWithAllRegions(access ->
-                access.resetStateMachine(new DefaultStateMachineContext<>(
-                        delivery.getCurrentStatus(), null, null, null))
-        );
-
-        sm.start();
-        return sm;
-    }
 }

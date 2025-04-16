@@ -39,7 +39,7 @@ public class Delivery {
         history.setDelivery(this);
         history.setStatus(status);
         history.setStatusTimestamp(timestamp);
-        statusHistory.add(0, history); // Добавляем в начало списка
+        statusHistory.add(history);
     }
 
     public Delivery(Long id, List<DeliveryStatusHistory> statusHistory) {
